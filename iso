@@ -1,0 +1,127 @@
+#!/usr/bin/env node
+/* -*- mode: Javascript -*- */
+var log = console.log;
+
+var malloc =
+    function(x,y) {
+	var mem = [];
+	for (i=0; i < y; i++)
+	{
+	    var raw = '';
+	    for (j=0; j < x; j++)
+	    {
+		raw += ' ';
+	    }
+
+	    mem.push(raw);
+	}
+
+	return mem;
+    };
+
+var print_iso_at =
+    function(x, what, out) {
+	for (i=0; i<what.length; i++) {
+	    var c = what[i];
+	    var ii = i + x;
+	    var line = out[i];
+
+	    if (line) {
+		line = line.slice(0,ii) + c + line.slice(ii+1);
+		out[i] = line;
+	    }
+	}
+    };
+
+var POS = 0;
+var SPACING = 4;
+
+var the_matrix = malloc(225, 100);
+
+process.stdin.resume();
+process.stdin.setEncoding('utf8');
+
+process.stdin.on('data', function (d) {
+    var dd = d.split('\n');
+
+    for (var k in dd) {
+	print_iso_at(POS, dd[k], the_matrix);
+	POS += SPACING;
+    }
+});
+       
+process.stdin.on('end', function () {
+    for (var line in the_matrix)
+    {
+	var l = the_matrix[line];
+	if (l.trim())
+	    console.log(l);
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// var log = console.log;
+// var args = process.argv;
+
+// // output formats
+// // stdout :default, html, png, svg
+// var out_format = 'stdout';
+
+// log(args);
+
+// // get rid of node and iso:
+// args = args.slice(2);
+
+// if (args.length)
+// {
+//     if (args.length == 1)
+//     {
+// 	// try --output=
+//     }
+//     else if (args.length == 2)
+//     {
+// 	switch (args[0])
+// 	{
+// 	case       '-o':
+// 	case      'out':
+// 	case '--output':
+// 	    out_format = args[1];
+// 	default:
+// 	    // default
+// 	    log(out_format);
+// 	    log('done');
+// 	}
+//     }
+// }
+// else
+// {
+//     log('rong # of args');
+// }
+
