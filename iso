@@ -1,32 +1,12 @@
 #!/usr/bin/env node
 /* -*- mode: Javascript -*- */
-
+var log = console.log;
 var cli = require('cli');
 
 cli.parse({
      output: ['o', 'output format'],
-    spacing: ['s', 'spacing between entries'],
-    
+    spacing: ['s', 'spacing between entries', 'int']
 });
-
-var log = console.log;
-
-var malloc =
-    function(x,y) {
-	var mem = [];
-	for (i=0; i < y; i++)
-	{
-	    var raw = '';
-	    for (j=0; j < x; j++)
-	    {
-		raw += ' ';
-	    }
-
-	    mem.push(raw);
-	}
-
-	return mem;
-    };
 
 var print_iso_at =
     function(x, what, out) {
@@ -35,17 +15,58 @@ var print_iso_at =
 	    var ii = i + x;
 	    var line = out[i];
 
-	    if (line) {
-		line = line.slice(0,ii) + c + line.slice(ii+1);
-		out[i] = line;
+	    if (!line) {
+		line = [];
 	    }
+
+	    line[ii] = c;
+	    out[i] = line;
 	}
     };
 
-var POS = 0;
-var SPACING = 4;
+var xchars =
+    function(x, what) {
+	log('x: ' + x);
+	if (x < 1) return '';
+	if (x == 1) return what;
+	return Array(x).join(what)
+    };
 
-var the_matrix = malloc(225, 100);
+var render_sparse_array =
+    function(what) {
+
+	var out = '';
+	var prev = 0;
+	var diff = 0;
+	var line;
+
+	for (var i in what) {
+	    line = what[i];
+	    for (var j in line) {
+		diff = j - prev
+		if (diff > 1 || prev == 0) {
+		    // render x spaces
+		    out += xchars(diff, ' ');
+		}
+
+		log('row: ' + i + ' key: ' + j + ' prev: ' + prev + ' diff: ' + diff);
+		
+		out += line[j];
+		prev = j;
+	    }
+	    
+	    out += '\n';
+	    prev = 0;
+	}
+
+	return out;
+    };
+
+var POS = 0;
+var SPACING = cli.options.spacing? cli.options.spacing : 4;
+
+// var the_matrix = malloc(225, 100);
+var the_matrix = [];
 
 process.stdin.resume();
 process.stdin.setEncoding('utf8');
@@ -54,16 +75,13 @@ process.stdin.on('data', function (d) {
     var dd = d.split('\n');
 
     for (var k in dd) {
+	log("pos: " + POS);
 	print_iso_at(POS, dd[k], the_matrix);
 	POS += SPACING;
     }
 });
        
 process.stdin.on('end', function () {
-    for (var line in the_matrix)
-    {
-	var l = the_matrix[line];
-	if (l.trim())
-	    console.log(l);
-    }
+    str = render_sparse_array(the_matrix);
+    log(str);
 });
