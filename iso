@@ -1,5 +1,14 @@
 #!/usr/bin/env node
 /* -*- mode: Javascript -*- */
+
+var cli = require('cli');
+
+cli.parse({
+     output: ['o', 'output format'],
+    spacing: ['s', 'spacing between entries'],
+    
+});
+
 var log = console.log;
 
 var malloc =
