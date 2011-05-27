@@ -16,3 +16,74 @@ i   \   w   w
                            g
                             l
                              e
+
+
+
+
+
+
+
+var js = (function(){
+    var ex = {};
+    var log = function(what) { console.log(what); };
+
+    var init =
+        function() {
+            linkify({"testing": "http://www.testing.com",
+                     "another": "http://www.another.com",
+                     "notfound": "http://asdfasdfasdfsdfafsdfjksfhkhskf.com"});
+        };
+
+    var linkify =
+        function(links) {
+            var pre = document.body.getElementsByTagName("pre")[0];
+            if (pre) {
+                var re, match, idx;
+                var raw = pre.innerHTML;
+                window.raw = raw;
+                var txt = raw.split('\n');
+                for (key in links) {
+                    re = buildregex(key);
+                    match = re.exec(raw);
+                    if (match) {
+                        idx = match.index;
+                        log("found: " + key + ' at: ' + idx);
+
+
+
+
+
+                    } else {
+                        //nothing..
+                    }
+                }
+            }
+        };
+
+    var get_local_line_pos =
+        function(what, lines, raw) {
+            
+        }
+
+    var buildregex =
+        function(what) {
+            var chars = what.split("");
+            return RegExp('(' + chars.join(').*(?:\r\n|\n\r|\n|\r).*(') + ')', 'g');
+        };
+
+    window.onload = init;
+    ex.buildregex = buildregex;
+    return ex;
+})();
+
+var create_line_index =
+    function(lines) {
+        out = [];
+        prev = 0;
+        for (var k in lines) {
+            prev = prev + lines[k].length;
+            out.push(prev);
+        }
+        return out;
+    };
+
